@@ -88,7 +88,7 @@ $(document).ready(function () {
 	/* Gives elements with a class of 'disabled' a return: false; */
   var Grid = Backbone.Model.extend({
     
-    refresh: function(){
+    change: function(){
       this.refreshGrid();
       this.refreshCode();
     },
@@ -148,8 +148,7 @@ $(document).ready(function () {
   $("li").css("background-color", "#339");
 
   $("a.example").click(function(){
-    grid.set("char", $(this).data("grid").replace(/^g/, ""));
-    grid.refresh();
+    grid.set("char", this.getAttribute("data-grid"));
   });
 
 });

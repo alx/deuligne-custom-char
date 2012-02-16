@@ -86,50 +86,70 @@ $(document).ready(function () {
 
 	/* DISABLED BUTTONS ------------- */
 	/* Gives elements with a class of 'disabled' a return: false; */
-    var Grid = Backbone.Model.extend({
-  displayGrid: function(){
-  },
+  var Grid = Backbone.Model.extend({
+    
+    refresh: function(){
+      this.refreshGrid();
+      this.refreshCode();
+    },
 
-  refreshCode: function(){
-    code = "";
-    $("li").each(function(){
-      if($(this).css("background-color") == "rgb(51, 51, 153)"){
-       code += "0";
-      } else {
-       code += "1";
-      }
-    });
-    this.set("char", code);
-    this.displayCode();
-  },
+    refreshGrid: function(){
+      code = this.get("char");
+      $.each($("li"), function(index){
+        if(code.charAt(index) == 0){
+          $(this).css("background-color", "#339");
+        } else {
+          $(this).css("background-color", "#aaa");
+        }
+      });
+    },
 
-  displayCode: function(){
-    code = "#include <Wire.h>\n#include <Deuligne.h>\n\nDeuligne lcd;\n\n// Custom caracter, 5 significant bits for each byte \n";
-    code += "byte newChar[8]={\n";
-    for (var i = 0; i < this.get("char").length; i+=5) {
-      code += "  B" + this.get("char").slice(i, i + 5) + ",\n"
-    };
-    code = code.replace(/,\n$/, "}\n\n");
-    code += "void setup(){\n  Wire.begin();\n  lcd.init();\n  lcd.createChar(0,smiley);\n  lcd.setCursor(0,0); // need to re-position after createChar\n  lcd.write(0);\n}\n\n\n";
-    code += "void loop(){\n  // Switch backlight every second\n  lcd.backLight(true);\n  delay(1000);\n  lcd.backLight(false);\n  delay(1000);\n}\n";
-    $("textarea").val(code);
-  }
-});
+    refreshCode: function(){
+      code = "";
+      $("li").each(function(){
+        if($(this).css("background-color") == "rgb(51, 51, 153)"){
+         code += "0";
+        } else {
+         code += "1";
+        }
+      });
+      this.set("char", code);
+      this.displayCode();
+    },
 
-var grid = new Grid({
-  char: "0000000000000000000000000000000000000000"
-});
-grid.displayCode();
+    displayCode: function(){
+      code = "#include <Wire.h>\n#include <Deuligne.h>\n\nDeuligne lcd;\n\n";
+      code += "byte newChar[8]={\n";
+      for (var i = 0; i < this.get("char").length; i+=5) {
+        code += "  B" + this.get("char").slice(i, i + 5) + ",\n"
+      };
+      code = code.replace(/,\n$/, "\n}\n\n");
+      code += "void setup(){\n  Wire.begin();\n  lcd.init();\n  lcd.createChar(0,newChar);\n  lcd.setCursor(0,0);\n";
+      code += "// need to re-position after createChar\n  lcd.write(0);\n}\n\n";
+      code += "void loop(){}\n";
+      $("textarea").val(code);
+    }
+  });
 
-$("li").click(function(){
-  if($(this).css("background-color") == "rgb(51, 51, 153)"){
-    $(this).css("background-color", "#aaa");
-  } else {
-    $(this).css("background-color", "#339");
-  }
-  grid.refreshCode();
-});
+  var grid = new Grid({
+    char: "0000000000000000000000000000000000000000"
+  });
+  grid.displayCode();
 
-$("li").css("background-color", "#339");
+  $("li").click(function(){
+    if($(this).css("background-color") == "rgb(51, 51, 153)"){
+      $(this).css("background-color", "#aaa");
+    } else {
+      $(this).css("background-color", "#339");
+    }
+    grid.refreshCode();
+  });
+
+  $("li").css("background-color", "#339");
+
+  $("a.example").click(function(){
+    grid.set("char", $(this).data("grid").replace(/^g/, ""));
+    grid.refresh();
+  });
 
 });

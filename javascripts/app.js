@@ -123,7 +123,7 @@ $(document).ready(function () {
       for (var i = 0; i < this.get("char").length; i+=5) {
         code += "  B" + this.get("char").slice(i, i + 5) + ",\n"
       };
-      code = code.replace(/,\n$/, "\n}\n\n");
+      code = code.replace(/,\n$/, "\n};\n\n");
       code += "void setup(){\n  Wire.begin();\n  lcd.init();\n  lcd.createChar(0,newChar);\n  lcd.setCursor(0,0);\n";
       code += "// need to re-position after createChar\n  lcd.write(0);\n}\n\n";
       code += "void loop(){}\n";

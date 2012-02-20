@@ -119,7 +119,7 @@ $(document).ready(function () {
 
     displayCode: function(){
       code = "#include <Wire.h>\n#include <Deuligne.h>\n\nDeuligne lcd;\n\n";
-      code += "byte newChar[9]={\n";
+      code += "byte newChar[8]={\n";
       for (var i = 0; i < this.get("char").length; i+=5) {
         code += "  B" + this.get("char").slice(i, i + 5) + ",\n"
       };
